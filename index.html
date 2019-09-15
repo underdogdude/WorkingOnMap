@@ -14,6 +14,7 @@
     crossorigin=""></script>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Manjari&display=swap" rel="stylesheet">
 
 
   <title>Test Version</title>
@@ -28,17 +29,86 @@
       line-height: 22px;
       font-weight: 300;
       position: relative;
+      font-family: 'Manjari', sans-serif;
     }
-
     #mapid {
       width: 100%;
       height: 100%;
       z-index: 1;
     }
+    .detail { 
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      width: 300px;
+      max-width: 100%;
+      height: 200px;
+      background-color: #0c121d;
+      z-index: 999999;
+      border-radius: 4px;
+      border: 0.5px solid #3f6b88;
+      box-shadow: 0px 0px 3px #92c5ff;
+    }
+    .bg { 
+      width: 100%;
+      height: 100%;
+      background: url('./bg.png');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: bottom right;
+    }
+    .logo { 
+      display: flex;
+      align-items: center;
+      padding-top: 10px;
+      padding-left: 10px;
+    }
+    .logo img { 
+      height: 100%;
+      width: 100%;
+      max-width: 60px;
+    }
+    .logo h1 { 
+      color: white;
+   
+      font-size: 25px;
+      margin-top: 13px;
+      margin-bottom: 0;
+      text-shadow: 0px 0px 3px #fdb116;
+    }
+
+    .total { 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+    .number { 
+      font-size: 70px;
+      margin-bottom: 0;
+    }
+
   </style>
 </head>
 
 <body>
+  <div class="detail">
+    <div class="bg">
+      <div class="logo">
+        <img src="./logo.png" />
+        <h1>Bright Riding a Bike</h1>
+      </div>
+      <!-- Count -->
+      <div class="total">
+        <h1 id="count" class="number">
+            N/A
+        </h1>
+        <h3 style="margin-top: 15px; color: #eaeaea;">Station</h3>
+      </div>
+
+    </div>
+  </div>
   <div id="mapid"></div>
 </body>
 
@@ -76,6 +146,9 @@
 
     L.tileLayer(mapURL).addTo(mymap);
     var places = $.getJSON('ubike.json', function (json) {
+    var totalStation = Object.keys(json.retVal).length;
+
+    $('#count').html(totalStation);
 
     Object.keys(json.retVal).forEach(function(key) {
       drawPlace(json.retVal[key]);
