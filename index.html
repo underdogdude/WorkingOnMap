@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+    crossorigin=""></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+  <title>Test Version</title>
+
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 300;
+      position: relative;
+    }
+
+    #mapid {
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="mapid"></div>
+</body>
+
+<script>
+
+  var radiusMin = 5;
+  var radiusMax = 20;
+
+  var color = {
+    general: '#3a7bbf',
+    location: '#99e0dc',
+    event: '#ae65d5'
+  }
+ 
+  //// load map ////////
+  var lat = 25.032;
+  var lng = 121.53;
+  var zoom = 13;
+
+  // var mymap = L.map('mapid').setView([lat, lng], zoom);
+  // var mapURL =
+  //   'https://api.mapbox.com/styles/v1/nontorious/ck0kgc6px3zl61cq6jruxeo4l/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoibm9udG9yaW91cyIsImEiOiJjazBrZmc2cDIwOGxzM2J1cDZsNGZhaDh6In0.QAuPuFpylhJaEhjO0vOZog'
+
+  // L.tileLayer(mapURL).addTo(mymap);
+
+  navigator.geolocation.getCurrentPosition(function(location) {
+    var latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
+        lat = latlng.lat;
+        lng = latlng.lng;
+        zoom = 16;
+
+    var mymap = L.map('mapid').setView([lat, lng], zoom);
+    var mapURL =
+      'https://api.mapbox.com/styles/v1/nontorious/ck0kgc6px3zl61cq6jruxeo4l/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoibm9udG9yaW91cyIsImEiOiJjazBrZmc2cDIwOGxzM2J1cDZsNGZhaDh6In0.QAuPuFpylhJaEhjO0vOZog'
+
+    L.tileLayer(mapURL).addTo(mymap);
+    var places = $.getJSON('ubike.json', function (json) {
+
+    Object.keys(json.retVal).forEach(function(key) {
+      drawPlace(json.retVal[key]);
+    });
+
+    //// create circles ////////
+    function drawPlace(data) {
+      var circle = L.circleMarker([data.lat, data.lng], {
+        // color: data.type,
+        color: "#158587", // color cirlces with type-colors
+        // color: color[data.type], // color cirlces with type-colors
+        fillColor: '#43bb92',
+        fillOpacity: 1,
+        radius: radiusMin // default size of cirlces
+      }).addTo(mymap);
+    }
+    });
+    
+    var marker = L.marker(latlng).addTo(mymap);
+  });
+  //// load dataset from json ////////
+
+  
+
+  function map(x, in_min, in_max, out_min, out_max) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+</script>
+
+</html>
